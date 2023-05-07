@@ -74,7 +74,7 @@ void addAfter(DList &L, int x, int y)
         cout << "\nCan't find the value "<<x;
     else
     {
-        if(p->pNext == NULL)
+        if(p == L.pTail)
             addTail(L,y);
         else
         {
@@ -96,8 +96,10 @@ void addBefore(DList &L, int x, int y)
     }
     if(p == NULL)
         cout << "\nCan't find the value "<<x;
-    else if(p->pPrev == NULL && p->info == x)
-            addHead(L,y);
+    else 
+    {
+            if(p == L.pHead)
+                addHead(L,y);
             else
             {
                 DNode *newnode = getnode(y);
@@ -106,76 +108,81 @@ void addBefore(DList &L, int x, int y)
                 newnode->pNext = p;
                 p->pPrev = newnode;
             }  
+    }
 }
 
 void addBeforeMulti(DList &L, int x, int y)
 {
-    if(L.pHead == NULL) 
-    {
-        cout << "\nCan't find the value "<<x;
-        return;
-    }
-    DNode *p = L.pTail;
-    bool ktr = false;
-    while(p != NULL)
-    {
-        if(p->info == x && p->pPrev == NULL)
-        {
-            ktr = true;
-            addHead(L, y);
-            p = p->pPrev;
-        }else if(p->info == x && p->pPrev != NULL)
-        {
-            ktr = true;
-            DNode *newnode = getnode(y);
-            if (newnode == NULL) return;
-            newnode->pPrev = p->pPrev;
-            p->pPrev->pNext = newnode;
-            p->pPrev = newnode;
-            newnode->pNext = p;
-            p = p->pPrev;
-        }
-        p = p->pPrev;
-    }
     
-    if(!ktr)
+    DNode *find = L.pHead;
+    while(find != NULL && find->info != x)
+    {
+        find = find->pNext;
+    }
+
+    if(find == NULL)
         cout << "\nCan't find the value "<<x;
+    else
+    {
+       DNode *p = L.pHead;
+       while(p != NULL)
+       {
+            if(p->info == x && p == L.pHead)
+            {
+                addHead(L,y);
+            }
+            else if(p->info == x)
+                {
+                    DNode *newnode = getnode(y);
+                    p->pPrev->pNext = newnode;
+                    newnode->pPrev = p->pPrev;
+                    newnode->pNext = p;
+                    p->pPrev = newnode;
+                }
+            p = p->pNext;
+       }
+        
+    }
+
 }
 
 
 void addAfterMulti(DList &L, int x, int y)
 {
-    if(L.pHead == NULL)
+    DNode *find = L.pHead;
+    while(find != NULL && find->info != x)
     {
-        cout << "\nCan't find the value "<<x;
-        return;
+        find = find->pNext;
     }
-    DNode *p = L.pHead;
-    bool ktr = false;
-    while (p != NULL)
+
+    if(find == NULL)
+        cout << "\nCan't find the value "<<x;
+    else
     {
-        if(p->info == x && p->pNext != NULL)
+        DNode *p = L.pHead;
+        while (p != NULL)
         {
-            ktr = true;
-            DNode *newnode = getnode(y);
-            if (newnode == NULL) return;
-            newnode->pNext = p->pNext;
-            p->pNext->pPrev = newnode;
-            p->pNext = newnode;
-            newnode->pPrev = p;
+            if(p->info == x)
+            {
+                if(p == L.pTail)
+                {
+                    addTail(L,y);
+                }
+                else
+                {
+                    DNode *newnode = getnode(y);
+                    newnode->pNext = p->pNext;
+                    newnode->pPrev = p;
+                    DNode *p1 = p;
+                    p1 = p1->pNext;
+                    p1->pPrev = newnode;
+                    p->pNext = newnode;
+                }
+            }
             p = p->pNext;
         }
-        else if(p->info == x && p->pNext == NULL)
-        {
-            ktr = true;
-            addTail(L,y);
-            p = p->pNext;
-        }
-        p = p->pNext;
+
     }
-    
-    if(!ktr)
-        cout << "\nCan't find the value "<<x;
 }
 
 void createList(DList &L)
@@ -193,8 +200,7 @@ void printList(DList L)
 {
     DNode *p = L.pHead;
     if(L.pHead == NULL)
-        {p = NULL; delete p;
-       return;}
+        cout << "\nThe list is empty";
     else
     {
         while(p != NULL)
@@ -202,7 +208,7 @@ void printList(DList L)
             cout << p->info << " ";
             p = p->pNext;
         }
-        delete p;
+        
     }
 }
 
