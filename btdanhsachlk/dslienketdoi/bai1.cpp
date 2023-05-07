@@ -66,67 +66,55 @@ void addHead(DList &L, int x)
 void addAfter(DList &L, int x, int y)
 {
     DNode *p = L.pHead;
-    bool ktr = false;
-    while (p != NULL)   
+    while(p != NULL && p->info != x)
     {
-        if(p->info == x && p->pNext != NULL)
+        p = p->pNext;
+    }
+    if(p == NULL) 
+        cout << "\nCan't find the value "<<x;
+    else
+    {
+        if(p->pNext == NULL)
+            addTail(L,y);
+        else
         {
-            ktr = true;
             DNode *newnode = getnode(y);
-            if (newnode == NULL) return;
             newnode->pNext = p->pNext;
             p->pNext->pPrev = newnode;
             p->pNext = newnode;
             newnode->pPrev = p;
-            p = p->pNext;
-            break;
         }
-        else if(p->info == x && p->pNext == NULL)
-        {
-            ktr = true;
-            DNode *newnode = getnode(y);
-            if (newnode == NULL) return;
-            addTail(L,y);
-            p = p->pNext;
-            break;
-        }
-        p = p->pNext;
     }
-    p = NULL;
-    delete p;
-    if(!ktr)
-        cout << "Can't find the value "<<x;
 }
 
 void addBefore(DList &L, int x, int y)
 {
     DNode *p = L.pHead;
-    bool ktr = false;
-    while(p != NULL)
+    while(p != NULL && p->info != x)
     {
-        if(p->info == x && p == L.pHead)
-        {
-            ktr = true;
-            addHead(L,y);
-        }else if(p->info == x && p != L.pHead)
-                {
-                    ktr = true;
-                    DNode *newnode = getnode(y);
-                    if (newnode == NULL) return;
-                    newnode->pPrev = p->pPrev;
-                    p->pPrev->pNext = newnode;
-                    p->pPrev = newnode;
-                    newnode->pNext = p;
-                }
         p = p->pNext;
     }
-    delete p;
-    if(!ktr)
+    if(p == NULL)
         cout << "\nCan't find the value "<<x;
+    else if(p->pPrev == NULL && p->info == x)
+            addHead(L,y);
+            else
+            {
+                DNode *newnode = getnode(y);
+                p->pPrev->pNext = newnode;
+                newnode->pPrev = p->pPrev;
+                newnode->pNext = p;
+                p->pPrev = newnode;
+            }  
 }
 
 void addBeforeMulti(DList &L, int x, int y)
 {
+    if(L.pHead == NULL) 
+    {
+        cout << "\nCan't find the value "<<x;
+        return;
+    }
     DNode *p = L.pTail;
     bool ktr = false;
     while(p != NULL)
@@ -134,8 +122,6 @@ void addBeforeMulti(DList &L, int x, int y)
         if(p->info == x && p->pPrev == NULL)
         {
             ktr = true;
-            DNode *newnode = getnode(y);
-            if (newnode == NULL) return;
             addHead(L, y);
             p = p->pPrev;
         }else if(p->info == x && p->pPrev != NULL)
@@ -151,7 +137,7 @@ void addBeforeMulti(DList &L, int x, int y)
         }
         p = p->pPrev;
     }
-    delete p;
+    
     if(!ktr)
         cout << "\nCan't find the value "<<x;
 }
@@ -159,6 +145,11 @@ void addBeforeMulti(DList &L, int x, int y)
 
 void addAfterMulti(DList &L, int x, int y)
 {
+    if(L.pHead == NULL)
+    {
+        cout << "\nCan't find the value "<<x;
+        return;
+    }
     DNode *p = L.pHead;
     bool ktr = false;
     while (p != NULL)
@@ -177,13 +168,12 @@ void addAfterMulti(DList &L, int x, int y)
         else if(p->info == x && p->pNext == NULL)
         {
             ktr = true;
-            DNode *newnode = getnode(y);
             addTail(L,y);
             p = p->pNext;
         }
         p = p->pNext;
     }
-    delete p;
+    
     if(!ktr)
         cout << "\nCan't find the value "<<x;
 }
@@ -203,7 +193,8 @@ void printList(DList L)
 {
     DNode *p = L.pHead;
     if(L.pHead == NULL)
-        cout << "\nThe list is empty";
+        {p = NULL; delete p;
+       return;}
     else
     {
         while(p != NULL)
@@ -211,6 +202,7 @@ void printList(DList L)
             cout << p->info << " ";
             p = p->pNext;
         }
+        delete p;
     }
 }
 
