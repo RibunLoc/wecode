@@ -200,7 +200,7 @@ void printList(DList L)
 {
     DNode *p = L.pHead;
     if(L.pHead == NULL)
-        cout << "\nThe list is empty";
+        cout << "The list is empty";
     else
     {
         while(p != NULL)
@@ -208,7 +208,7 @@ void printList(DList L)
             cout << p->info << " ";
             p = p->pNext;
         }
-        
+
     }
 }
 
