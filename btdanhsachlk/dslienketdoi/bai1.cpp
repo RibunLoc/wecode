@@ -46,7 +46,7 @@ void addTail(DList &L, int x)
     }
 
 }
-
+///
 void addHead(DList &L, int x)
 {
     DNode *newnode = getnode(x);
@@ -63,6 +63,7 @@ void addHead(DList &L, int x)
     }
 
 }
+
 void addAfter(DList &L, int x, int y)
 {
     DNode *p = L.pHead;
@@ -84,7 +85,9 @@ void addAfter(DList &L, int x, int y)
             p->pNext = newnode;
             newnode->pPrev = p;
         }
+        p = NULL;
     }
+    delete p;
 }
 
 void addBefore(DList &L, int x, int y)
@@ -103,12 +106,14 @@ void addBefore(DList &L, int x, int y)
             else
             {
                 DNode *newnode = getnode(y);
-                p->pPrev->pNext = newnode;
                 newnode->pPrev = p->pPrev;
+                p->pPrev->pNext = newnode;
                 newnode->pNext = p;
                 p->pPrev = newnode;
-            }  
+            }
+            p = NULL;
     }
+    delete p;
 }
 
 void addBeforeMulti(DList &L, int x, int y)
@@ -119,12 +124,13 @@ void addBeforeMulti(DList &L, int x, int y)
     {
         find = find->pNext;
     }
-
+    
     if(find == NULL)
         cout << "\nCan't find the value "<<x;
     else
     {
-       DNode *p = L.pHead;
+       DNode *p = find;
+       find = NULL;
        while(p != NULL)
        {
             if(p->info == x && p == L.pHead)
@@ -134,16 +140,16 @@ void addBeforeMulti(DList &L, int x, int y)
             else if(p->info == x)
                 {
                     DNode *newnode = getnode(y);
-                    p->pPrev->pNext = newnode;
                     newnode->pPrev = p->pPrev;
+                    p->pPrev->pNext = newnode;
                     newnode->pNext = p;
                     p->pPrev = newnode;
                 }
             p = p->pNext;
        }
-        
+        delete p;
     }
-
+    delete find;
 }
 
 
@@ -159,7 +165,8 @@ void addAfterMulti(DList &L, int x, int y)
         cout << "\nCan't find the value "<<x;
     else
     {
-        DNode *p = L.pHead;
+        DNode *p = find;
+        find = NULL;
         while (p != NULL)
         {
             if(p->info == x)
@@ -167,22 +174,23 @@ void addAfterMulti(DList &L, int x, int y)
                 if(p == L.pTail)
                 {
                     addTail(L,y);
+                    p = p->pNext;
                 }
                 else
                 {
                     DNode *newnode = getnode(y);
                     newnode->pNext = p->pNext;
-                    newnode->pPrev = p;
-                    DNode *p1 = p;
-                    p1 = p1->pNext;
-                    p1->pPrev = newnode;
+                    p->pNext->pPrev = newnode;
                     p->pNext = newnode;
+                    newnode->pPrev = p;
+                    p = p->pNext;
                 }
             }
             p = p->pNext;
         }
-
+        delete p;
     }
+    delete find;
 }
 
 void createList(DList &L)
@@ -210,6 +218,7 @@ void printList(DList L)
         }
 
     }
+    delete p;
 }
 
 int main()
