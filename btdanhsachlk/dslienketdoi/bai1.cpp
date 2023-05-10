@@ -12,7 +12,7 @@ struct DList
 {
 	DNode *pHead, *pTail;
 };
-
+////////////////////////////////////////
 void init(DList &L)
 {
     L.pHead = NULL;
@@ -137,7 +137,9 @@ void addBeforeMulti(DList &L, int x, int y)
             {
                 addHead(L,y);
             }
-            else if(p->info == x)
+            else
+            {
+             if(p->info == x)
                 {
                     DNode *newnode = getnode(y);
                     newnode->pPrev = p->pPrev;
@@ -145,6 +147,7 @@ void addBeforeMulti(DList &L, int x, int y)
                     newnode->pNext = p;
                     p->pPrev = newnode;
                 }
+            }
             p = p->pNext;
        }
         delete p;
@@ -199,28 +202,27 @@ void createList(DList &L)
     do
     {
         cin >> x;
-        if(x != -1)
+        if(x >= 0 )
             addTail(L,x);
-    } while (x != -1);
-    
+    } while (x >= 0);
 }
+
 void printList(DList L)
 {
     DNode *p = L.pHead;
-    if(L.pHead == NULL)
-        cout << "The list is empty";
-    else
+    if(L.pHead != NULL)
     {
         while(p != NULL)
         {
             cout << p->info << " ";
             p = p->pNext;
         }
-
     }
+    cout<<endl;
     delete p;
 }
 
+/////////////////////////////
 int main()
 {
 	DList L;
