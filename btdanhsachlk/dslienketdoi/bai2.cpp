@@ -52,7 +52,7 @@ void addTail(DList &L, int x)
     }
 
 }
-
+///
 void addHead(DList &L, int x)
 {
     DNode *newnode = getnode(x);
@@ -69,6 +69,7 @@ void addHead(DList &L, int x)
     }
 
 }
+
 void addAfter(DList &L, int x, int y)
 {
     DNode *p = L.pHead;
@@ -80,7 +81,7 @@ void addAfter(DList &L, int x, int y)
         cout << "\nCan't find the value "<<x;
     else
     {
-        if(p->pNext == NULL)
+        if(p == L.pTail)
             addTail(L,y);
         else
         {
@@ -90,7 +91,9 @@ void addAfter(DList &L, int x, int y)
             p->pNext = newnode;
             newnode->pPrev = p;
         }
+        p = NULL;
     }
+    delete p;
 }
 
 void addBefore(DList &L, int x, int y)
@@ -102,88 +105,104 @@ void addBefore(DList &L, int x, int y)
     }
     if(p == NULL)
         cout << "\nCan't find the value "<<x;
-    else if(p->pPrev == NULL && p->info == x)
-            addHead(L,y);
+    else 
+    {
+            if(p == L.pHead)
+                addHead(L,y);
             else
             {
                 DNode *newnode = getnode(y);
-                p->pPrev->pNext = newnode;
                 newnode->pPrev = p->pPrev;
+                p->pPrev->pNext = newnode;
                 newnode->pNext = p;
                 p->pPrev = newnode;
-            }  
+            }
+            p = NULL;
+    }
+    delete p;
 }
 
 void addBeforeMulti(DList &L, int x, int y)
 {
-    if(L.pHead == NULL) 
+    
+    DNode *find = L.pHead;
+    while(find != NULL && find->info != x)
     {
-        cout << "\nCan't find the value "<<x;
-        return;
-    }
-    DNode *p = L.pTail;
-    bool ktr = false;
-    while(p != NULL)
-    {
-        if(p->info == x && p->pPrev == NULL)
-        {
-            ktr = true;
-            addHead(L, y);
-            p = p->pPrev;
-        }else if(p->info == x && p->pPrev != NULL)
-        {
-            ktr = true;
-            DNode *newnode = getnode(y);
-            if (newnode == NULL) return;
-            newnode->pPrev = p->pPrev;
-            p->pPrev->pNext = newnode;
-            p->pPrev = newnode;
-            newnode->pNext = p;
-            p = p->pPrev;
-        }
-        p = p->pPrev;
+        find = find->pNext;
     }
     
-    if(!ktr)
+    if(find == NULL)
         cout << "\nCan't find the value "<<x;
+    else
+    {
+       DNode *p = find;
+       find = NULL;
+       while(p != NULL)
+       {
+            if(p->info == x && p == L.pHead)
+            {
+                addHead(L,y);
+            }
+            else
+            {
+             if(p->info == x)
+                {
+                    DNode *newnode = getnode(y);
+                    newnode->pPrev = p->pPrev;
+                    p->pPrev->pNext = newnode;
+                    newnode->pNext = p;
+                    p->pPrev = newnode;
+                }
+            }
+            p = p->pNext;
+       }
+        delete p;
+    }
+    delete find;
 }
 
 
 void addAfterMulti(DList &L, int x, int y)
 {
-    if(L.pHead == NULL)
+    DNode *find = L.pHead;
+    while(find != NULL && find->info != x)
     {
-        cout << "\nCan't find the value "<<x;
-        return;
+        find = find->pNext;
     }
-    DNode *p = L.pHead;
-    bool ktr = false;
-    while (p != NULL)
-    {
-        if(p->info == x && p->pNext != NULL)
-        {
-            ktr = true;
-            DNode *newnode = getnode(y);
-            if (newnode == NULL) return;
-            newnode->pNext = p->pNext;
-            p->pNext->pPrev = newnode;
-            p->pNext = newnode;
-            newnode->pPrev = p;
-            p = p->pNext;
-        }
-        else if(p->info == x && p->pNext == NULL)
-        {
-            ktr = true;
-            addTail(L,y);
-            p = p->pNext;
-        }
-        p = p->pNext;
-    }
-    
-    if(!ktr)
-        cout << "\nCan't find the value "<<x;
-}
 
+    if(find == NULL)
+        cout << "\nCan't find the value "<<x;
+    else
+    {
+        DNode *p = find;
+        find = NULL;
+        while (p != NULL)
+        {
+            if(p->info == x)
+            {
+                if(p == L.pTail)
+                {
+                    addTail(L,y); // có thể là bug ở đây??
+                    return;
+
+                }
+                else
+                {
+                    DNode *newnode = getnode(y);
+                    newnode->pNext = p->pNext;
+                    newnode->pPrev = p;
+                    p->pNext->pPrev = newnode;
+                    p->pNext = newnode;
+                    
+                   //p = p->pNext;
+                }
+            }
+            p = p->pNext;
+        }
+        delete p;
+    }
+    delete find;
+}
 
 void removeHead(DList &L)
 {
@@ -223,7 +242,7 @@ void removeTail(DList &L)
         cout<<"\nList is empty. Can't delete";
         return;
     }
-    cout<<"\nDo you want to delete the first element?(y/n): ";
+    cout<<"\nDo you want to delete the last element?(y/n): ";
     char y;
     cin >> y;
     if(y == 'y' || y == 'Y')
@@ -242,7 +261,7 @@ void removeTail(DList &L)
             p->pPrev = NULL;
             delete p;
         }
-    }
+    }else return;
 }
 
 
@@ -252,27 +271,25 @@ void createList(DList &L)
     do
     {
         cin >> x;
-        if(x != -1)
+        if(x >= 0 )
             addTail(L,x);
-    } while (x != -1);
-    
+    } while (x >= 0);
 }
+
 void printList(DList L)
 {
     DNode *p = L.pHead;
-    if(L.pHead == NULL)
-        {p = NULL; delete p;
-        cout << "List is empty\n";
-       return;}
-    else
+    if(L.pHead != NULL)
     {
         while(p != NULL)
         {
             cout << p->info << " ";
             p = p->pNext;
         }
-        delete p;
     }
+    else
+        cout <<"List is empty";
+    delete p;
 }
 
 int main()
