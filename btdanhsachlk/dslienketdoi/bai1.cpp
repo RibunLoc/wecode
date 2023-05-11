@@ -176,17 +176,19 @@ void addAfterMulti(DList &L, int x, int y)
             {
                 if(p == L.pTail)
                 {
-                    addTail(L,y);
-                    p = p->pNext;
+                    addTail(L,y); // có thể là bug ở đây??
+                    return;
+
                 }
                 else
                 {
                     DNode *newnode = getnode(y);
                     newnode->pNext = p->pNext;
+                    newnode->pPrev = p;
                     p->pNext->pPrev = newnode;
                     p->pNext = newnode;
-                    newnode->pPrev = p;
-                    p = p->pNext;
+                    
+                   p = p->pNext;
                 }
             }
             p = p->pNext;
@@ -218,7 +220,8 @@ void printList(DList L)
             p = p->pNext;
         }
     }
-    cout<<endl;
+    else
+        cout <<"List is empty";
     delete p;
 }
 
