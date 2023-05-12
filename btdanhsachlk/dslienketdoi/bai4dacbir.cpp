@@ -192,7 +192,7 @@ void addAfterMulti(DList &L, int x, int y)
                     p->pNext->pPrev = newnode;
                     p->pNext = newnode;
 
-                    // p = p->pNext;
+                    p = p->pNext;
                 }
             }
             p = p->pNext;
@@ -409,7 +409,7 @@ void removeMultiNodeS(DList &L, int x)
     }
 }
 
-
+/////////////////
 void removeAfter(DList &L, int x)
 {
     DNode *p = L.pHead;
@@ -472,19 +472,19 @@ void removeBefore(DList &L, int x)
     else
     {
         if(p == L.pHead)
-            {
-                cout<<endl<<x<<" is the first element. Can't delete the element before it";
-                p = NULL;
-                delete p;
-                return;
-            }
+        {
+            cout<<endl<<x<<" is the first element. Can't delete the element before it";
+            p = NULL;
+            delete p;
+            return;
+        }
         cout<<"\nDo you want to delete the element before "<<x<<" ?(y/n): ";
         char y;cin >> y;
 
         if(y == 'y' || y == 'Y')
         {
                 DNode *sau = p->pPrev;
-                if(sau->pPrev == NULL)
+                if(sau == L.pHead)
                 {
                     L.pHead = p;
                     L.pHead->pPrev = NULL;
@@ -532,64 +532,53 @@ void removeMultiAfters(DList &L, int x) // sai ở xóa node khi tìm thấy
             cin >> y;
             if(y == 'y' || y == 'Y')
             {
-                DNode *q = L.pTail;
-                q = q->pPrev;
-                while(q != NULL && p->pPrev != q)
+                while(p->pNext != NULL)
                 {
-                    if(q->info == x)
+                    if(p->info == x)
                     {
-                        DNode *truoc = q->pNext;
+                        DNode *truoc = p->pNext;
                         if(truoc == L.pTail)
                         {
-                            L.pTail = q;
+                            L.pTail = p;
                             L.pTail->pNext = NULL;
                             truoc->pPrev = NULL;
                             delete truoc;
-                            q = q->pPrev;
+                            p = NULL;
+                            delete p;
+                            return;
                         }
                         else
                         {
-                            q->pNext = truoc->pNext;
-                            truoc->pNext->pPrev = q;
+                            p->pNext = truoc->pNext;
+                            truoc->pNext->pPrev = p;
                             truoc->pNext = NULL;
                             truoc->pPrev = NULL;
                             delete truoc;
-                            q = q->pPrev;
+                            p = p->pNext;
                         }
                     }
                     else
                     {
-                        q = q->pPrev;
+                        p = p->pNext;
                     }
                 }
-                if(q == NULL)
-                {
-                    delete q;
-                    p = NULL;
-                    delete p;
-                }
-                else
-                {
-                    q = NULL;
-                    delete q;
-                    p = NULL;
-                    delete p;
-                }
+                p = p->pNext;
+                delete p;
             }
         }
 }
 
 void removeMultiBefores(DList &L, int x) // note sai khi tìm thấy ở đầu danh sách
 {
-    DNode *q =L.pTail;
+    DNode *q = L.pTail;
     while(q != NULL && q->info != x)
     {
         q = q->pPrev;
     }
-    if(q == NULL) //
+    if(q == NULL)
     {
-         cout << "\nCan't find the value "<<x;
-        delete q; 
+        cout << "\nCan't find the value "<<x;
+        delete q;
     }
     else if(q == L.pHead)
         {
@@ -604,11 +593,11 @@ void removeMultiBefores(DList &L, int x) // note sai khi tìm thấy ở đầu 
             if(y == 'y' || y == 'Y')
             {
                 DNode *p = L.pHead->pNext;
-                while(p != q->pNext) // q không null vì đã có điều kiện
+                while(p != q->pNext)
                 {
                     if(p->info == x)
                     {
-                        DNode *sau = p->pPrev;
+                     DNode *sau = p->pPrev;
                         if(sau == L.pHead)
                         {
                             L.pHead = p;
@@ -619,23 +608,23 @@ void removeMultiBefores(DList &L, int x) // note sai khi tìm thấy ở đầu 
                         }
                         else
                         {
-                            sau->pPrev->pNext = p;
                             p->pPrev = sau->pPrev;
+                            sau->pPrev->pNext = p;
                             sau->pNext = NULL;
                             sau->pPrev = NULL;
                             delete sau;
                             p = p->pNext;
                         }
                     }
-                    else 
-                    {p = p->pNext;}
+                    else
+                    {
+                        p = p->pNext;
+                    }
                 }
-               
-                    p = NULL;
-                    delete p;
-                    q = NULL;
-                    delete q;
-                
+                q = NULL;
+                delete q;
+                p = NULL;
+                delete p;
             }
         }
 }
