@@ -81,49 +81,37 @@ void telenode(DList &L, node* &p)
         }
 }
 
-void tellperson(DList &L ,int m)
+
+void tellperson(DList &L ,int m, node* *array)
 {
     int per;
-    queue<int> q;
+
     for (int i = 1; i <= m; i++)
     {
         cin >> per;
-        node *p = L.pHead;
-        while(p != NULL && p->data != per)
-        {
-            p = p->pNext;
-        }
+        node *p = array[per];
+
         if(p)
         {
-            q.push(per);
+            telenode(L,p);
         }
         else
         {
             delete p;// không tìm thấy
         }
+        cout << L.pTail->data << " ";
     }
     
-    while(!q.empty())
-    {
-        per = q.front();
-        q.pop();
-        node *p = L.pHead;
-        while(p != NULL && p->data != per)
-        {
-            p = p->pNext;
-        }
-        if(p)
-        {
-            telenode(L,p);
-            cout << L.pTail->data << " ";
-        }
-    }
 }
 
-void inputList(DList &L, int n)
+void inputList(DList &L, node* *array, int n)
 {
+
     for (int i = 1; i <= n; i++)
+    {
         addtail(L,i);
+        array[i] = L.pTail;
+    }
     
 }
 
@@ -136,12 +124,11 @@ int main()
     {
         cin >> n;
         cin >> m;
-    } while (m > 0 || n > 0);
+    } while (m < 0 || n < 0);
+    node* *array = new node*[n+1];
+    inputList(L,array,n);
+    tellperson(L,m,array);
     
-    inputList(L,n);
-    tellperson(L,m);
-   
-   
-    
+    delete[] array;
     return 0;
 }
