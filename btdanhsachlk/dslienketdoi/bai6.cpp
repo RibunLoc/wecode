@@ -63,13 +63,15 @@ void addTail(DList &L, PROVINCE x)
     }
 }
 
-void delenode(DList &L , node *p)
+void delenode(DList &L , node* &p)
 {
     if(p == L.pHead)
     {       
         if (L.pHead->pNext == NULL) 
         {
-            delete p;
+            node *temp = p;
+            p = NULL;
+            delete temp;
             init(L);
         }
         else
@@ -77,30 +79,41 @@ void delenode(DList &L , node *p)
             L.pHead = p->pNext;
             L.pHead->pPrev = NULL;
             p->pNext = NULL;
-            delete p;
+            p = L.pHead;
         }
     }else if(p == L.pTail)
         {
             L.pTail = p->pPrev;
             L.pTail->pNext = NULL;
             p->pPrev = NULL;
-            delete p;
+            p = NULL;
         }else
         {
             p->pPrev->pNext = p->pNext;
             p->pNext->pPrev = p->pPrev;
-            p->pNext = NULL;
-            p->pPrev= NULL;
             node *temp = p;
+            p = p->pNext;
+            temp->pNext = NULL;
+            temp->pPrev= NULL;
             delete temp;
         }
 }
 
 bool ktrname(node *p , char name[31])
 {
+    char sosanh[31];
+    int t = 0;
     for (int i = 0; i <= strlen(p->data.tentinh); i++)
     {
-        if(p->data.tentinh[i] != name[i])
+        sosanh[t++] = p->data.tentinh[i];
+        if(p->data.tentinh[i] == ' ')
+            t = 0;
+    }
+    
+
+    for (int i = 0; i <= strlen(name); i++)
+    {
+        if(sosanh[i] != name[i])
             return false;    
     }
     return true;
@@ -110,22 +123,22 @@ bool ktrname(node *p , char name[31])
 node* deleteinfo(DList &L)
 {
     char name[31];
-    cout << "Enter the name of the province you want to delete: "<<endl;
+    cout << "Enter the last word of name to search: "<<endl;
     cin.ignore();
     cin.getline(name,31);
     node *p = L.pHead;
+    node* save = NULL;
     while (p != NULL)
     {
         if(ktrname(p,name))
-            break;
+        {
+            save = p;
+            delenode(L,p);
+        }
+        else
         p = p->pNext;
     }
-    if(p)
-    {
-        delenode(L,p);
-        return p;
-    }
-        return NULL;
+    return save;
 }
 
 
