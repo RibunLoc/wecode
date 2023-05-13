@@ -26,19 +26,19 @@ struct node
     node *pPrev;
 };
 
-struct DList
+struct List
 {
     node *pHead;
     node *pTail;
 };
 
-void init(DList &L)
+void Init(List &L)
 {
     L.pHead = NULL;
     L.pTail = NULL;
 }
 
-node* getnode(DList &L, PROVINCE x)
+node* getnode(List &L, PROVINCE x)
 {
     node *newele = new node;
     if(newele != NULL)
@@ -50,7 +50,7 @@ node* getnode(DList &L, PROVINCE x)
     return newele;
 }
 
-void addTail(DList &L, PROVINCE x)
+void addTail(List &L, PROVINCE x)
 {
     node *newnode = getnode(L,x);
     if(L.pHead == NULL)
@@ -63,7 +63,18 @@ void addTail(DList &L, PROVINCE x)
     }
 }
 
-void delenode(DList &L , node* &p)
+PROVINCE inputdata()
+{
+    PROVINCE data;
+    cin >> data.id;
+    cin.ignore();
+    cin.getline(data.tentinh,31);
+    cin >> data.pop;
+    cin >> data.area;
+    return data;
+}
+
+void delenode(List &L , node* &p)
 {
     if(p == L.pHead)
     {       
@@ -72,7 +83,7 @@ void delenode(DList &L , node* &p)
             node *temp = p;
             p = NULL;
             delete temp;
-            init(L);
+            Init(L);
         }
         else
         {
@@ -99,61 +110,7 @@ void delenode(DList &L , node* &p)
         }
 }
 
-bool ktrname(node *p , char name[31])
-{
-    char sosanh[31];
-    int t = 0;
-    for (int i = 0; i <= strlen(p->data.tentinh); i++)
-    {
-        sosanh[t++] = p->data.tentinh[i];
-        if(p->data.tentinh[i] == ' ')
-            t = 0;
-    }
-    
-
-    for (int i = 0; i <= strlen(name); i++)
-    {
-        if(sosanh[i] != name[i])
-            return false;    
-    }
-    return true;
-    
-}
-
-node* deleteinfo(DList &L)
-{
-    char name[31];
-    cout << "Enter the last word of name to search: "<<endl;
-    cin.ignore();
-    cin.getline(name,31);
-    node *p = L.pHead;
-    node* save = NULL;
-    while (p != NULL)
-    {
-        if(ktrname(p,name))
-        {
-            save = p;
-            delenode(L,p);
-        }
-        else
-        p = p->pNext;
-    }
-    return save;
-}
-
-
-PROVINCE inputdata()
-{
-    PROVINCE data;
-    cin >> data.id;
-    cin.ignore();
-    cin.getline(data.tentinh,31);
-    cin >> data.pop;
-    cin >> data.area;
-    return data;
-}
-
-void inputList(DList &L)
+void inputListProvinces(List &L)
 {
     int n;
     do
@@ -173,10 +130,9 @@ void outputdata(node *p)
     cout << p->data.id<<"\t"<<p->data.tentinh<<"\t"<<p->data.pop<<"\t"<<p->data.area<<"\t"<<endl;
 }
 
-void outputList(DList L)
+void outputListProvinces(List L)
 {
-    cout << "ID\t"<<"|Province\t"<<"|Population\t"<<"|Area\t"<<endl;
-    if(L.pHead == NULL)
+     if(L.pHead == NULL)
     {
         cout << "List is empty";
         return;
@@ -189,30 +145,31 @@ void outputList(DList L)
     }
 }
 
+void removeList(List &L)
+{
+    node *p = L.pHead;
+   
+    while (p != NULL)
+    {
+        delenode(L,p);
+    }
+}
+
 int main()
 {
-    DList L;
-    init(L);
-    inputList(L);
-    cout << "List of provinces:"<< endl;
-    outputList(L);
-    if(L.pHead == NULL)
-        return 0;
-    node* p = deleteinfo(L);
-    if(p == NULL)
-    {
-        delete p;
-        cout << "Not found";
-    }
-    else
-    {
-        cout << "Updated List:"<<endl;
-        outputList(L);
-        p = NULL;
-        delete p;
-    }
+    List L;
+    Init(L);
+    inputListProvinces(L);
+    cout<<"List of provinces:"<<endl;
+    cout<<"ID\t|Province\t|Population\t|Area"<<endl;
+    outputListProvinces(L);
 
-
+    if(L.pHead)
+    {
+        cout<<"Delete all:"<<endl;
+        removeList(L);
+        outputListProvinces(L);
+    }
     return 0;
 }
 
