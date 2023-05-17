@@ -190,7 +190,7 @@ node *deletenode(tree &l , int x)
                         }else
                         {
                             findreplace2(p->left,p); // tìm khóa có node lớn nhất bên trái
-                            findreplace1(p->right,p);// tìm khóa có node nhỏ nhất bên phải
+                            //findreplace1(p->right,p);// tìm khóa có node nhỏ nhất bên phải
                             delete p;
                         }
             }

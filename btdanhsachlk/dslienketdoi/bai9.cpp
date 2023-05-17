@@ -28,6 +28,7 @@ typedef struct DATHUC{
 }List;
  
 //###INSERT CODE HERE -
+int z = 1;
 
 void init(List &B)
 {
@@ -46,9 +47,13 @@ Node* getnode(DONTHUC* data)
     return newele;
 }
 
-void addtail(List &B, DONTHUC* data)
+void addtail(List &B, DONTHUC* data,int &z)
 {
-
+    if(z == 1)
+    {
+        init(B);
+        z = 0;
+    }
     Node* newnode = getnode(data);
     if(B.head == NULL)
         B.head = B.tail = newnode;
@@ -61,43 +66,128 @@ void addtail(List &B, DONTHUC* data)
 
 void Nhap(List &B, double heso, int somu)
 {
-    if(B.head != B.tail && B.head->next == NULL)
-    {
-        B.head = NULL;
-        B.tail = NULL;
-    }//////
-    
+
     DONTHUC* data = new DONTHUC;
     data->heso = heso;
     data->somu = somu;
-    addtail(B,data);
+    addtail(B,data,z);
     
 }
 
-void Xuat(List B)
+void xuatdanhsach(List &B)
 {
-    if(B.head == NULL)
-        return;
-    else
+    Node* p = B.head;
+    while (p != NULL)
     {
-        Node* p = B.head;
-        while(p != NULL)
+        cout << p->data->heso<< " "<< p->data->somu<< endl;
+        p = p ->next;
+    }
+    
+    
+}
+
+void Xuat(List &B)
+{
+    if (z == 1)
+    {
+        DONTHUC* data = new DONTHUC;
+        data->heso = 0;
+        data->somu = 1;
+        addtail(B, data, z);
+    }
+
+    bool tr = true;
+    bool o = true;
+    bool l = false;
+    Node* p = B.head;
+    while (p != NULL)
+    {
+        if (p->data->heso == 0)
         {
-            cout << p->data->heso <<"x^"<<p->data->somu;
-            if(p->next != NULL && p->next->data->heso > 0)
+            if (p->next == NULL && o)
+            {
+                cout << "0\n";
+                return;
+            }
+            if (p->next != NULL && p->next->data->heso > 0 && l ) 
             {
                 cout << "+";
+                
             }
-            else if(p->next != NULL && p->next->data->heso == 0)
-                {
-                    cout << "";
-                }
-                else if(p->next != NULL)
-                    cout << " ";
-            
+            l = true;
             p = p->next;
+            continue;
         }
+        else if (p->data->heso == 1)
+        {
+            if (p->data->somu == 0)
+            {
+                cout << "1";
+            }
+            else if (p->data->somu == 1)
+            {
+                cout << "x";
+            }
+            else
+            {
+                cout << "x^" << p->data->somu;
+            }
+        }
+        else if (p->data->heso == -1)
+        {
+            if (p->data->somu == 0)
+            {
+                cout << "-1";
+            }
+            else if (p->data->somu == 1)
+            {
+                cout << "-x";
+            }
+            else
+            {
+                cout << "-x^" << p->data->somu;
+            }
+        }
+        else
+        {
+            if (p->data->somu == 0)
+            {
+                cout << p->data->heso;
+            }
+            else if (p->data->somu == 1)
+            {
+                cout << p->data->heso << "x";
+            }
+            else
+            {
+                cout << p->data->heso << "x^" << p->data->somu;
+            }
+        }
+        
+        if (p->next != NULL && p->next->data->heso > 0)
+        {
+            cout << "+";
+        }
+        l = true;
+        tr = false;
+        o = false;
+        p = p->next;
     }
+    
+    cout << endl;
+}
+
+
+double TinhDaThuc(DATHUC B, double x)
+{
+    double result = 0;
+    Node* p = B.head;
+    while(p != NULL)
+    {
+        result += (p->data->heso * pow(x,p->data->somu));
+        p = p->next;
+    }
+    return result;
 }
 
 int main() {
@@ -111,7 +201,8 @@ int main() {
     }
     cout << "Da thuc vua nhap la: "; Xuat(B);
     double x; cin >> x;
-    cout << "\nVoi x=" << x << ", gia tri da thuc la: ";
-    //     << setprecision(2) << fixed << TinhDaThuc(B, x);
+    cout << "\nVoi x=" << x << ", gia tri da thuc la: "
+         << setprecision(2) << fixed << TinhDaThuc(B, x);
+
     return 0;
 }
