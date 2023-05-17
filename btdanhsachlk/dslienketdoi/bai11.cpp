@@ -92,7 +92,7 @@ SinglyLinkedListNode* insertSortedLinkedList(SinglyLinkedListNode* head, int x) 
         newnode->next = p->next;
         p->next = newnode;
     }
-    return head;
+    return head; /// 1 2 4 5 6 3
 
 }
 
