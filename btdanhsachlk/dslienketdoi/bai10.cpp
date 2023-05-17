@@ -48,12 +48,12 @@ Node* getnode(DONTHUC* data)
     return newele;
 }
 
-void addtail(List &B, DONTHUC* data,int &z)
+void addtail(List &B, DONTHUC* data,int &t)
 {
-    if(z == 1)
+    if(t == 1)
     {
         init(B);
-        z = 0;
+        t = 0;
     }
     Node* newnode = getnode(data);
     if(B.head == NULL)
@@ -81,21 +81,22 @@ void Nhap(List &C)
     }
     if(n == 0)
     {
-        if(phuchoi)
+        DONTHUC* data = new DONTHUC;
+        data->heso = 0;
+        data->somu = 1;
+        addtail(C, data, z);
+        z = 1;
+        if(!phuchoi)
         {
-           DONTHUC* data = new DONTHUC;
-            data->heso = 0;
-            data->somu = 1;
-            addtail(C, data, z);
-            z = 1; 
-        }
-        else
-        {
-            DONTHUC* data = new DONTHUC;
-            data->heso = 0;
-            data->somu = 1;
-            addtail(C, data, z);
-            z = 1;
+            while(n == 0)
+            {
+                int ao1;
+                int ao2;
+                cin >> ao1;
+                cin >> ao2;
+                if(ao2 == 0)
+                    break;
+            }
         }
         phuchoi = false;
         return;
@@ -110,6 +111,7 @@ void Nhap(List &C)
     b = 1;
 
 }
+
 
 
 void Xuat(List B)
@@ -133,7 +135,6 @@ void Xuat(List B)
                 cout << "+";
                 
             }
-            l = true;
             p = p->next;
             continue;
         }
@@ -193,6 +194,17 @@ void Xuat(List B)
     }
     
 }
+
+void xuatds(List C)
+{
+    Node* p = C.head;
+    while(p != NULL)
+    {
+        cout << p->data->heso<<" "<< p->data->somu<< endl;
+        p = p->next;
+    }
+}
+
 
 DATHUC Tong2DaThuc(DATHUC A, DATHUC B)
 {
@@ -267,5 +279,6 @@ int main() {
     cout << "Da thuc A: "; Xuat(A);
     cout << "\nDa thuc B: "; Xuat(B);
     cout << "\nA+B = "; Xuat(Tong2DaThuc(A, B));
+
     return 0;
 }
