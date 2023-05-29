@@ -75,14 +75,15 @@ public:
                     shortesdistance[v_list[i]] = shortesdistance[p] + matrix[v_index[p]][i];
                     dem++;
                     demdinh++;
-                    //break;
+                    break;
                 }  
 
                 if(i == 0 && dem > 0) 
                 {
                     open.push(parent[p]);
-                    //parent.erase(parent.end());
-                } 
+                }
+                
+
             }
             
         }
